@@ -1,1 +1,99 @@
+-- Project Title: Netflix Content Analysis
+
+-- Project Description: 
+-- This project involves querying Netflix data to extract insights about TV shows and movies available on the platform. 
+-- Two different approaches are demonstrated: one utilizing a local PostgreSQL database with local data, and the other querying a remote database accessed through a GitHub repository path.
+
+-- Approach 1: Local PostgreSQL Database
+
+-- Data Table Creation:
+CREATE TABLE netflix_titles_info (
+    "show_id" varchar(5),
+    "type" varchar(7),
+    "title" varchar(58),
+    "country" varchar(74),
+    "date_added" timestamp,
+    "release_year" int,
+    "rating" varchar(5),
+    "duration" varchar(9),
+    "listed_in" varchar(74)
+);
+
+CREATE TABLE netflix_people (
+    "show_id" varchar(5),
+    "director" varchar(54),
+    "cast" varchar(532)
+);
+
+-- Data Insertion:
+INSERT INTO netflix_titles_info
+    ("show_id", "type", "title", "country", "date_added", "release_year", "rating", "duration", "listed_in")
+VALUES
+    -- Insert data rows here;
+
+INSERT INTO netflix_people
+    ("show_id", "director", "cast")
+VALUES
+    -- Insert data rows here;
+
+-- SQL Queries:
+
+-- 1. How many movie titles are there in the database? (movies only, not TV shows)
+SELECT count(*) 
+FROM netflix_titles_info
+WHERE type='Movie';
+
+-- 2. When was the most recent batch of TV shows and/or movies added to the database?
+SELECT max(date(date_added))
+FROM netflix_titles_info;
+
+-- 3. List all the movies and TV shows in alphabetical order.
+SELECT title
+FROM netflix_titles_info
+ORDER BY title asc;
+
+-- 4. Who was the Director for the movie "The Starling"?
+SELECT director
+FROM netflix_titles_info titles
+LEFT JOIN netflix_people people ON titles.show_id=people.show_id
+WHERE titles.title='The Starling';
+
+-- 5. What is the oldest movie in the database and what year was it made?
+SELECT title, release_year
+FROM netflix_titles_info
+WHERE type='Movie'
+ORDER BY release_year asc
+LIMIT 1;
+
+-- Approach 2: Remote Database Accessed via GitHub Repository
+
+-- SQL Queries:
+
+-- 1. How many movie titles are there in the database? (movies only, not TV shows)
+SELECT count(*) 
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
+WHERE type='Movie';
+
+-- 2. When was the most recent batch of TV shows and/or movies added to the database?
+SELECT max(date(date_added))
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info";
+
+-- 3. List all the movies and TV shows in alphabetical order.
+SELECT title
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
+ORDER BY title asc;
+
+-- 4. Who was the Director for the movie "Bright Star"?
+SELECT director
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info" titles
+LEFT JOIN  "CharlotteChaze/BreakIntoTech"."netflix_people" people
+ON titles.show_id=people.show_id
+WHERE titles.title='Bright Star';
+
+-- 5. What is the oldest movie in the database and what year was it made?
+SELECT title, release_year
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
+WHERE type='Movie'
+ORDER BY release_year asc
+LIMIT 1;
 
